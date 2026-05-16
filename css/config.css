@@ -137,3 +137,59 @@
 }
 .cfg-hint-ok  { color: #4ade80; }
 .cfg-hint-err { color: #f87171; }
+
+/* ── Tasas Hipotecario UVA ── */
+.cfg-huva-grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 0;
+  padding: 14px 12px 12px;
+}
+
+.cfg-huva-corner { /* vacío */ }
+
+.cfg-huva-col-hdr {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6a6e66;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.cfg-huva-row-hdr {
+  font-size: 12px;
+  color: #9a9ea8;
+  display: flex;
+  align-items: center;
+  padding: 6px 8px 6px 0;
+  white-space: nowrap;
+}
+
+.cfg-huva-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+}
+
+.cfg-huva-inp {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border, #2a2a3a);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+  width: 76px;
+  padding: 9px 4px;
+  outline: none;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.cfg-huva-inp::placeholder { color: #444; }
+.cfg-huva-inp:focus { border-color: #C8102E; }
+.cfg-huva-inp::-webkit-outer-spin-button,
+.cfg-huva-inp::-webkit-inner-spin-button { -webkit-appearance: none; }
+.cfg-huva-inp[type=number] { -moz-appearance: textfield; }

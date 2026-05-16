@@ -89,6 +89,7 @@ const App = (() => {
     if (section === 'pdf')    { PDFViewer.render();    return; }
     if (section === 'pda_bp') { PDA_BP.render();      return; }
     if (section === 'pda_be') { PDA_BE.render();      return; }
+    if (section === 'hip_uva') { HipUVA.render();    return; }
   }
 
   /* ── Reiniciar (cambio de PIN) ── */

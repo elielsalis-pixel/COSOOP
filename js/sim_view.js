@@ -32,6 +32,12 @@ const SimView = (() => {
       subtitle: 'Sistema francés con gracia, tasa fija/variable e IVA',
       icon:     '💼',
     },
+    {
+      id:       'hip_uva',
+      title:    'Hipotecario UVA',
+      subtitle: 'Sistema francés en UVAs — tasa fija mensual',
+      icon:     '🏡',
+    },
   ];
 
   const VIEW = `

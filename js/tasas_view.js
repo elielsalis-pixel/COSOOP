@@ -37,6 +37,15 @@ const TasasView = (() => {
       getEstado:   s  => s?.secciones?.length ? `${s.secciones.length} secciones` : null,
       onOpen:      () => BancaPersonas.render(),
     },
+    {
+      id:          'hip_uva',
+      nombre:      'Hipotecario UVA',
+      descripcion: 'Tasas TNA para créditos hipotecarios UVA',
+      icon:        '🏡',
+      getStored:   async () => { const t = await HipUVATasas.get(); return t ? { tasas: t } : null; },
+      getEstado:   s  => s ? '4 tasas configuradas' : null,
+      onOpen:      () => renderHipUVADetalle(),
+    },
   ];
 
   const fmtPct = v => (v * 100).toFixed(2).replace('.', ',') + ' %';
@@ -164,6 +173,56 @@ const TasasView = (() => {
     }).join('');
 
     wrap.innerHTML = `<table class="tv-table">${thead}<tbody>${rows}</tbody></table>`;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     DETALLE HipUVA — vista de lectura de tasas 2×2
+  ═══════════════════════════════════════════════════ */
+  async function renderHipUVADetalle() {
+    document.getElementById('app').innerHTML = `
+<div class="tv-view">
+  <div class="tv-topbar">
+    <button class="tv-back" id="tv-back-det">&#8249;</button>
+    <div class="tv-titles">
+      <div class="tv-title">Hipotecario UVA</div>
+      <div class="tv-subtitle">Tasas TNA según condiciones</div>
+    </div>
+  </div>
+  <div class="tv-wrap" id="tv-huva-wrap"></div>
+</div>`;
+
+    document.getElementById('tv-back-det')
+      ?.addEventListener('click', () => render());
+
+    let tasas = null;
+    try { tasas = await HipUVATasas.get(); } catch {}
+
+    const wrap = document.getElementById('tv-huva-wrap');
+    if (!tasas) {
+      wrap.innerHTML = `
+        <div class="tv-empty">
+          <span class="tv-empty-icon">🏡</span>
+          <span>Sin tasas configuradas.<br>Cargalas desde <strong>Configuración</strong>.</span>
+        </div>`;
+      return;
+    }
+
+    const fmtT = v => (v != null && !isNaN(v))
+      ? v.toFixed(2).replace('.', ',') + ' %'
+      : '<span class="tv-null">—</span>';
+
+    wrap.innerHTML = `
+      <div class="tv-huva-grid">
+        <div class="tv-huva-corner"></div>
+        <div class="tv-huva-col-hdr">1era Viv. SI</div>
+        <div class="tv-huva-col-hdr">1era Viv. NO</div>
+        <div class="tv-huva-row-hdr">Cobra Hab. SI</div>
+        <div class="tv-huva-cell">${fmtT(tasas.v1si_habsi)}</div>
+        <div class="tv-huva-cell">${fmtT(tasas.v1no_habsi)}</div>
+        <div class="tv-huva-row-hdr">Cobra Hab. NO</div>
+        <div class="tv-huva-cell">${fmtT(tasas.v1si_habno)}</div>
+        <div class="tv-huva-cell">${fmtT(tasas.v1no_habno)}</div>
+      </div>`;
   }
 
   /* ═══════════════════════════════════════════════════

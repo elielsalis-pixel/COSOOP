@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cosoop-v28';
+const CACHE_NAME = 'cosoop-v29';
 
 const ASSETS_CDN = [
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
@@ -21,6 +21,7 @@ const ASSETS_LOCAL = [
   './css/sim_view.css',
   './css/pex.css',
   './css/pf.css',
+  './css/pda_bp.css',
   './js/app.js',
   './js/auth.js',
   './js/menu.js',
@@ -34,6 +35,7 @@ const ASSETS_LOCAL = [
   './js/sim_view.js',
   './js/pex.js',
   './js/pf.js',
+  './js/pda_bp.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
 ];

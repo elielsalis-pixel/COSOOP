@@ -20,6 +20,12 @@ const SimView = (() => {
       subtitle: 'Simulador de rendimiento a tasa nominal anual',
       icon:     '🏛️',
     },
+    {
+      id:       'pda_bp',
+      title:    'Préstamos Personales',
+      subtitle: 'Sistema francés con seguro, IVA y sellado',
+      icon:     '🏠',
+    },
   ];
 
   const VIEW = `

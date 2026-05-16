@@ -3,7 +3,6 @@ const PDA_BP = (() => {
 
   let monto = 0, cuotas = 0, tna = 0;
   let fechaConst = null, fechaVto1 = null;
-  let segVidaPct = 0, aseguradoPct = 100;
   let ivaActivo = true, selladoPct = 1;
   let debT = null;
 
@@ -57,26 +56,8 @@ const PDA_BP = (() => {
       </div>
     </div>
 
-    <div class="bp-section-hdr">Tributos y Cobertura</div>
+    <div class="bp-section-hdr">Tributos</div>
     <div class="bp-card">
-      <div class="bp-field-row">
-        <label class="bp-field-label" for="bp-segvida">Seguro de vida</label>
-        <div class="bp-input-wrap">
-          <input id="bp-segvida" class="bp-input bp-input-sm" type="number"
-                 inputmode="decimal" placeholder="0,000" min="0" step="0.001">
-          <span class="bp-sym">%</span>
-        </div>
-      </div>
-      <div class="bp-divider"></div>
-      <div class="bp-field-row">
-        <label class="bp-field-label" for="bp-asegurado">% Asegurado</label>
-        <div class="bp-input-wrap">
-          <input id="bp-asegurado" class="bp-input bp-input-sm" type="number"
-                 inputmode="decimal" placeholder="100" min="0" max="100" step="1">
-          <span class="bp-sym">%</span>
-        </div>
-      </div>
-      <div class="bp-divider"></div>
       <div class="bp-field-row">
         <label class="bp-field-label">IVA (21%)</label>
         <button class="bp-toggle" id="bp-iva-toggle">SI</button>
@@ -147,7 +128,6 @@ const PDA_BP = (() => {
               <th>Saldo</th>
               <th>Capital</th>
               <th>Interés</th>
-              <th>Seg. Vida</th>
               <th>IVA</th>
               <th>Cuota</th>
             </tr>
@@ -250,7 +230,7 @@ const PDA_BP = (() => {
     // Cuadro de marcha
     let saldo = monto;
     const rows = [];
-    let totalIntereses = 0, totalSegVida = 0, totalIVA = 0, totalCuotas = 0;
+    let totalIntereses = 0, totalIVA = 0, totalCuotas = 0;
 
     const cfTimes = [0];
     const cfCFT  = [-montoAcreditar]; // incluye todos los costos
@@ -264,12 +244,10 @@ const PDA_BP = (() => {
 
       const interes  = saldo * TNA * dias / 365;
       const capital  = cuotaPura - interes;
-      const segVida  = saldo * (segVidaPct / 100) * (30 / 365) * (aseguradoPct / 100);
       const iva      = ivaActivo ? interes * 0.21 : 0;
-      const cuotaFin = cuotaPura + segVida + iva;
+      const cuotaFin = cuotaPura + iva;
 
       totalIntereses += interes;
-      totalSegVida   += segVida;
       totalIVA       += iva;
       totalCuotas    += cuotaFin;
 
@@ -280,7 +258,6 @@ const PDA_BP = (() => {
         saldoInicial: saldo,
         capital,
         interes,
-        segVida,
         iva,
         cuotaFin,
       });
@@ -300,7 +277,7 @@ const PDA_BP = (() => {
     return {
       cuotaPura, sellado, montoAcreditar,
       cuotaProm, cftTEA, cftTNA30, cftSinTrib,
-      totalIntereses, totalIVA, totalCuotas,
+      totalIntereses, totalCuotas,
       rows,
     };
   }
@@ -357,7 +334,6 @@ const PDA_BP = (() => {
           <td>${fmtNum.format(r.saldoInicial)}</td>
           <td>${fmtNum.format(r.capital)}</td>
           <td>${fmtNum.format(r.interes)}</td>
-          <td>${fmtNum.format(r.segVida)}</td>
           <td>${fmtNum.format(r.iva)}</td>
           <td><strong>${fmtNum.format(r.cuotaFin)}</strong></td>
         </tr>`).join('');
@@ -384,12 +360,8 @@ const PDA_BP = (() => {
     if (elConst) { elConst.value = toDateInput(hoy);     fechaConst = hoy; }
     if (elVto1)  { elVto1.value  = toDateInput(proximo); fechaVto1  = proximo; }
 
-    // Valores por defecto de tributos
-    const elSeg  = document.getElementById('bp-segvida');
-    const elAseg = document.getElementById('bp-asegurado');
+    // Valor por defecto de sellado
     const elSell = document.getElementById('bp-sellado');
-    if (elSeg)  elSeg.value  = '0';
-    if (elAseg) elAseg.value = '100';
     if (elSell) elSell.value = '1';
 
     // Listeners numéricos
@@ -409,16 +381,6 @@ const PDA_BP = (() => {
 
     elVto1?.addEventListener('change', e => {
       fechaVto1 = parseDate(e.target.value);
-      scheduleRecalc();
-    });
-
-    elSeg?.addEventListener('input', e => {
-      segVidaPct = parseFloat(e.target.value) || 0;
-      scheduleRecalc();
-    });
-
-    elAseg?.addEventListener('input', e => {
-      aseguradoPct = parseFloat(e.target.value) ?? 100;
       scheduleRecalc();
     });
 
@@ -445,7 +407,6 @@ const PDA_BP = (() => {
   function render() {
     monto = 0; cuotas = 0; tna = 0;
     fechaConst = null; fechaVto1 = null;
-    segVidaPct = 0; aseguradoPct = 100;
     ivaActivo = true; selladoPct = 1;
     clearTimeout(debT);
     document.getElementById('app').innerHTML = VIEW;

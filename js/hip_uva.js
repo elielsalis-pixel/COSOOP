@@ -52,9 +52,48 @@ const HipUVATasas = (() => {
 const HipUVA = (() => {
   'use strict';
 
-  const fmt$    = v => '$ ' + Math.round(v).toLocaleString('es-AR');
-  const fmtUVA  = v => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' UVA';
-  const fmtPct  = v => v.toFixed(2).replace('.', ',') + ' %';
+  /* ── Constantes de negocio ── */
+  const MAX_MONTO    = 300_000_000;   // editar aqui si el limite cambia
+  const MIN_INGRESOS = 3_500_000;
+
+  /* ── UVA BCRA — cache diario en localStorage ── */
+  const BCRA_UVA_ID = 31;
+  const UVA_LS_KEY  = 'cosoop_uva';
+
+  async function fetchUVA() {
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem(UVA_LS_KEY)); } catch {}
+
+    const hoy = new Date().toISOString().slice(0, 10);
+    if (cached?.fecha === hoy) return cached;
+
+    const hasta = hoy;
+    const desde = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+    const url   = `https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/${BCRA_UVA_ID}?desde=${desde}&hasta=${hasta}`;
+
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      const resp = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const json = await resp.json();
+      const arr  = json?.results;
+      if (!arr?.length) throw new Error('Sin datos');
+      const last  = arr[arr.length - 1];
+      const entry = { fecha: last.fecha, valor: last.valor };
+      try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
+      return entry;
+    } catch {
+      clearTimeout(timer);
+      return cached;
+    }
+  }
+
+  /* ── Helpers ── */
+  const fmt$    = v => '$ ' + Math.round(v).toLocaleString('es-AR');
+  const fmtUVA  = v => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' UVA';
+  const fmtPct  = v => v.toFixed(2).replace('.', ',') + ' %';
   const fmtDate = d => d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const fmt2    = v => v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const toISO   = d => d.toISOString().slice(0, 10);
@@ -106,9 +145,10 @@ const HipUVA = (() => {
       <div class="huva-field-row">
         <span class="huva-field-label">Valor UVA</span>
         <div class="huva-input-wrap">
-          <input class="huva-input" id="huva-uva" type="number" inputmode="decimal" placeholder="0,00">
+          <input class="huva-input" id="huva-uva" type="number" inputmode="decimal" placeholder="cargando…">
         </div>
       </div>
+      <div class="huva-uva-lbl" id="huva-uva-lbl">Consultando BCRA…</div>
     </div>
 
     <div class="huva-section-hdr">Fechas</div>
@@ -156,6 +196,7 @@ const HipUVA = (() => {
       </div>
     </div>
 
+    <div class="huva-error" id="huva-error" style="display:none"></div>
     <button class="huva-calc-btn" id="huva-calc">Calcular</button>
 
     <div id="huva-results" style="display:none">
@@ -251,10 +292,10 @@ const HipUVA = (() => {
       cfTimes.push(diasAcum);
     }
 
-    const cftTEA        = irrBiseccion(cfFlows, cfTimes);
-    const cuotaEnPesos  = rows[0].cuotaTotal * valorUVA;
-    const cuotaMaxIngres = ingresos * 0.25;
-    const viable        = cuotaEnPesos <= cuotaMaxIngres;
+    const cftTEA         = irrBiseccion(cfFlows, cfTimes);
+    const cuotaEnPesos   = rows[0].cuotaTotal * valorUVA;
+    const cuotaMaxIngres = ingresos > 0 ? ingresos * 0.25 : 0;
+    const viable         = ingresos > 0 && cuotaEnPesos <= cuotaMaxIngres;
 
     return { montoUVA, cuotaPura, rows, cftTEA, cuotaEnPesos, cuotaMaxIngres, viable };
   }
@@ -271,6 +312,25 @@ const HipUVA = (() => {
     document.getElementById('huva-fecha-const').value = toISO(hoy);
     document.getElementById('huva-fecha-vto').value   = toISO(mesSig);
 
+    /* UVA automático desde BCRA */
+    const uvaInp = document.getElementById('huva-uva');
+    const uvaLbl = document.getElementById('huva-uva-lbl');
+    fetchUVA().then(uva => {
+      if (!uvaInp) return;
+      if (uva) {
+        uvaInp.value = uva.valor;
+        const fechaFmt = new Date(uva.fecha + 'T12:00:00').toLocaleDateString('es-AR', {
+          day: '2-digit', month: '2-digit', year: 'numeric',
+        });
+        if (uvaLbl) uvaLbl.textContent = `BCRA · ${fechaFmt}`;
+      } else {
+        if (uvaLbl) uvaLbl.textContent = 'Sin conexión · ingresá manualmente';
+      }
+    }).catch(() => {
+      if (uvaLbl) uvaLbl.textContent = 'Sin conexión · ingresá manualmente';
+    });
+
+    /* TNA desde tabla configurada */
     let tasasGuardadas = null;
     try { tasasGuardadas = await HipUVATasas.get(); } catch {}
 
@@ -281,6 +341,7 @@ const HipUVA = (() => {
       if (inp && !inp.dataset.manual) {
         const tna = HipUVATasas.getTNA(tasasGuardadas, v1SI, habSI);
         if (tna !== null) inp.value = tna;
+        else inp.value = '';
       }
     }
 
@@ -299,6 +360,7 @@ const HipUVA = (() => {
 
     actualizarTNA();
 
+    /* Calcular */
     document.getElementById('huva-calc')?.addEventListener('click', () => {
       const monto    = parseFloat(document.getElementById('huva-monto').value)    || 0;
       const cuotas   = parseInt(document.getElementById('huva-cuotas').value)     || 0;
@@ -309,14 +371,43 @@ const HipUVA = (() => {
       const fcStr    = document.getElementById('huva-fecha-const').value;
       const fvStr    = document.getElementById('huva-fecha-vto').value;
 
-      if (!monto || !cuotas || cuotas < 1 || cuotas > 240 || !valorUVA || !tna) return;
+      /* Validaciones */
+      if (!monto || !cuotas || !valorUVA || !tna) {
+        mostrarError('Completá todos los campos antes de calcular.');
+        return;
+      }
+      if (cuotas < 1 || cuotas > 240) {
+        mostrarError('Las cuotas deben estar entre 1 y 240.');
+        return;
+      }
+      if (monto > MAX_MONTO) {
+        mostrarError(`El monto máximo es $ ${MAX_MONTO.toLocaleString('es-AR')}.`);
+        return;
+      }
+      if (ingresos > 0 && ingresos < MIN_INGRESOS) {
+        mostrarError(`El ingreso mínimo requerido es $ ${MIN_INGRESOS.toLocaleString('es-AR')}.`);
+        return;
+      }
 
       const fechaConst = new Date(fcStr + 'T12:00:00');
       const fechaVto   = new Date(fvStr + 'T12:00:00');
 
+      ocultarError();
       const res = calcular({ monto, cuotas, valorUVA, tna, iva: !v1SI, ingresos, fechaConst, fechaVto });
       mostrarResultados(res);
     });
+  }
+
+  function mostrarError(msg) {
+    const el = document.getElementById('huva-error');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = '';
+  }
+
+  function ocultarError() {
+    const el = document.getElementById('huva-error');
+    if (el) el.style.display = 'none';
   }
 
   function mostrarResultados(res) {
@@ -328,12 +419,17 @@ const HipUVA = (() => {
     document.getElementById('r-cuota-pura').textContent  = fmtUVA(res.cuotaPura);
     document.getElementById('r-cuota-total').textContent = fmtUVA(res.rows[0].cuotaTotal);
     document.getElementById('r-cuota-pesos').textContent = fmt$(res.cuotaEnPesos);
-    document.getElementById('r-cuota-max').textContent   = fmt$(res.cuotaMaxIngres);
+    document.getElementById('r-cuota-max').textContent   = res.cuotaMaxIngres > 0 ? fmt$(res.cuotaMaxIngres) : '—';
     document.getElementById('r-cft').textContent         = fmtPct(res.cftTEA * 100);
 
     const viEl = document.getElementById('r-viable');
-    viEl.textContent = res.viable ? 'VIABLE' : 'NO VIABLE';
-    viEl.className   = 'huva-rv ' + (res.viable ? 'huva-viable' : 'huva-no-viable');
+    if (res.cuotaMaxIngres > 0) {
+      viEl.textContent = res.viable ? 'VIABLE' : 'NO VIABLE';
+      viEl.className   = 'huva-rv ' + (res.viable ? 'huva-viable' : 'huva-no-viable');
+    } else {
+      viEl.textContent = '—';
+      viEl.className   = 'huva-rv';
+    }
 
     const tbody = document.getElementById('huva-tbody');
     tbody.innerHTML = res.rows.map(r => `

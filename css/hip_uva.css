@@ -252,6 +252,28 @@
 .huva-table tbody tr:last-child td { border-bottom: none; }
 .huva-table tbody tr:nth-child(even) td { background: rgba(255,255,255,.025); }
 
+/* ── Label fecha UVA BCRA ── */
+.huva-uva-lbl {
+  font-size: 11px;
+  color: #6a6e66;
+  text-align: right;
+  padding: 0 16px 10px;
+  font-style: italic;
+}
+
+/* ── Error de validación ── */
+.huva-error {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 10px;
+  color: #f87171;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
 /* ── Nota aclaratoria ── */
 .huva-nota {
   font-size: 11px;

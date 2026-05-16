@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cosoop-v29';
+const CACHE_NAME = 'cosoop-v30';
 
 const ASSETS_CDN = [
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',

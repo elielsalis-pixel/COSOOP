@@ -319,7 +319,7 @@ const PDA_BE = (() => {
       });
 
       cfTimes.push(diasAcum);
-      cfFlows.push(cuotaFinal);
+      cfFlows.push(cuotaFinal - iva);
     }
 
     // — Resumen —

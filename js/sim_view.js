@@ -14,6 +14,12 @@ const SimView = (() => {
       subtitle: 'Anticipo de Cupones de Tarjeta de Crédito',
       icon:     '💳',
     },
+    {
+      id:       'pf',
+      title:    'Plazo Fijo',
+      subtitle: 'Simulador de rendimiento a tasa nominal anual',
+      icon:     '🏛️',
+    },
   ];
 
   const VIEW = `

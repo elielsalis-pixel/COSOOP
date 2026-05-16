@@ -83,6 +83,7 @@ const App = (() => {
     if (section === 'sim')    { SimView.render();      return; }
     if (section === 'dcpd')   { DCPD.render();         return; }
     if (section === 'pex')    { PEX.render();          return; }
+    if (section === 'pf')     { PF.render();           return; }
     if (section === 'config') { Config.render();       return; }
     if (section === 'tas')    { TasasView.render();    return; }
     if (section === 'pdf')    { PDFViewer.render();    return; }

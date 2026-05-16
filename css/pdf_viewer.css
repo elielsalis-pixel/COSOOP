@@ -1,0 +1,226 @@
+/* ── Visor PDF ── */
+
+.pv-view {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--bg-base, #0e0e13);
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  overflow: hidden;
+  max-width: 100vw;
+}
+
+/* ── Topbar ── */
+.pv-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--bg-surface, #17171f);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  flex-shrink: 0;
+}
+
+.pv-back {
+  background: none;
+  border: none;
+  color: #C8102E;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px 0 0;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pv-titles { flex: 1; min-width: 0; }
+
+.pv-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* En el visor, el título es el nombre del archivo → puede ser largo */
+.pv-visor-title {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pv-icon-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
+}
+.pv-icon-btn:active { background: rgba(255,255,255,0.08); }
+
+/* ── Buscador ── */
+.pv-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--bg-surface, #17171f);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  flex-shrink: 0;
+}
+
+.pv-search-input {
+  flex: 1;
+  background: var(--bg-base, #0e0e13);
+  border: 1px solid var(--border, #2a2a3a);
+  border-radius: 9px;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-family: inherit;
+  padding: 8px 12px;
+  outline: none;
+  min-width: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.pv-search-input::placeholder { color: #444; }
+.pv-search-input:focus { border-color: #C8102E; }
+
+.pv-search-clear {
+  background: none;
+  border: none;
+  color: #6a6e66;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 6px;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Repositorio: scroll y lista ── */
+.pv-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pv-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.12s, opacity 0.2s;
+}
+.pv-item:active { background: rgba(200,16,46,0.06); }
+
+.pv-item-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.pv-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pv-item-nombre {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e0e0e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pv-item-meta {
+  font-size: 12px;
+  color: #6a6e66;
+  margin-top: 3px;
+}
+
+.pv-item-del {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  color: #3a3a4a;
+  flex-shrink: 0;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, background 0.15s;
+}
+.pv-item-del:active {
+  color: #C8102E;
+  background: rgba(200,16,46,0.1);
+}
+
+/* ── Indicador de página (dentro del visor) ── */
+.pv-page-indicator {
+  background: var(--bg-surface, #17171f);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  text-align: center;
+  font-size: 12px;
+  color: #6a6e66;
+  padding: 6px 16px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Visor: scroll de páginas ── */
+.pv-visor-view { background: #111118; }
+
+.pv-visor-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: #111118;
+  /* Permite pinch-zoom nativo del navegador */
+  touch-action: pan-x pan-y pinch-zoom;
+}
+
+/* Cada página del PDF */
+.pv-page {
+  display: block;
+  width: 100%;
+  background: #1a1a24;
+  margin-bottom: 6px;
+  /* Altura mínima mientras carga */
+  min-height: 200px;
+}
+
+.pv-page:last-child { margin-bottom: 0; }
+
+.pv-page canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── Estado vacío / error ── */
+.pv-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  gap: 14px;
+  color: #6a6e66;
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 28px;
+  line-height: 1.7;
+}
+.pv-empty strong { color: #9a9ea8; }
+.pv-empty-icon { font-size: 44px; opacity: 0.4; }

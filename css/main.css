@@ -1,0 +1,73 @@
+/* ── Variables de diseño ─────────────────────────────────────
+   Cambiar colores, tipografía o tamaños: solo tocar esta sección.
+──────────────────────────────────────────────────────────── */
+:root {
+  /* Institucionales Credicoop */
+  --brand-red:      #C8102E;
+  --brand-red-dark: #a00d24;
+  --brand-gray:     #6a6e66;
+
+  /* Bandera cooperativa */
+  --coop-red:    #E8002D;
+  --coop-orange: #FF6600;
+  --coop-yellow: #FFD700;
+  --coop-green:  #009A44;
+  --coop-blue:   #0057A8;
+  --coop-indigo: #4B0082;
+  --coop-violet: #8B008B;
+
+  /* Superficies */
+  --bg-base:    #0e0e13;
+  --bg-surface: #17171f;
+  --bg-card:    #1e1e2a;
+  --border:     #2a2a3a;
+
+  /* Texto */
+  --text-primary:   #f0f0f5;
+  --text-secondary: #8888a0;
+  --text-muted:     #44445a;
+
+  /* Forma */
+  --radius-card: 16px;
+  --radius-key:  14px;
+
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg-base);
+  font-family: var(--font);
+  color: var(--text-primary);
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+}
+
+/* Franja cooperativa de 7 colores */
+.coop-stripe {
+  width: 100%;
+  height: 4px;
+  flex-shrink: 0;
+  background: linear-gradient(to right,
+    var(--coop-red)    0%    14.28%,
+    var(--coop-orange) 14.28% 28.57%,
+    var(--coop-yellow) 28.57% 42.86%,
+    var(--coop-green)  42.86% 57.14%,
+    var(--coop-blue)   57.14% 71.43%,
+    var(--coop-indigo) 71.43% 85.71%,
+    var(--coop-violet) 85.71% 100%
+  );
+}

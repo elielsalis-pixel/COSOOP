@@ -1,0 +1,6 @@
+cosoop_cert.pem
+cosoop_key.pem
+__pycache__/
+*.pyc
+.claude/
+preview.html

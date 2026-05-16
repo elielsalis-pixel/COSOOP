@@ -1,0 +1,388 @@
+/* ── DCPD Simulator — estilos ── */
+
+.dcpd-view {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;           /* dynamic viewport height en móvil */
+  background: var(--bg-base, #0e0e13);
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+/* ── Barra superior ── */
+.dcpd-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg-surface, #17171f);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  flex-shrink: 0;
+}
+
+.dcpd-back {
+  background: none;
+  border: none;
+  color: #C8102E;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px 0 0;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dcpd-title {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.dcpd-status {
+  font-size: 13px;
+  color: #6a6e66;
+  animation: spin-status 1s linear infinite;
+}
+@keyframes spin-status { to { opacity: 0.3; } }
+
+/* ── Área con scroll ── */
+.dcpd-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Tarjeta genérica ── */
+.dcpd-card {
+  background: var(--bg-card, #1e1e2a);
+  border: 1px solid var(--border, #2a2a3a);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.dcpd-divider {
+  height: 1px;
+  background: var(--border, #2a2a3a);
+}
+
+/* ── Fila de campo ── */
+.dcpd-field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 54px;
+  padding: 0 16px;
+  gap: 12px;
+}
+
+.dcpd-field-label {
+  font-size: 14px;
+  color: #9a9ea8;
+  white-space: nowrap;
+}
+
+.dcpd-field-static {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+/* ── TNA input ── */
+.dcpd-tna-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dcpd-tna-input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: right;
+  width: 90px;
+  outline: none;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.dcpd-tna-input::placeholder { color: #333; }
+
+.dcpd-tna-sym {
+  font-size: 18px;
+  color: #9a9ea8;
+  font-weight: 500;
+}
+
+/* ── Encabezado de sección ── */
+.dcpd-section-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6a6e66;
+  padding: 0 4px 10px;
+}
+
+.dcpd-badge {
+  background: #C8102E;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 1px 7px;
+  letter-spacing: 0;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ── Fila de cheque ── */
+#dcpd-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dcpd-cheque-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card, #1e1e2a);
+  border: 1px solid var(--border, #2a2a3a);
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+/* Grupo fecha: texto editable + botón calendario + picker oculto */
+.dcpd-fecha-group {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 2px;
+}
+
+.dcpd-ch-fecha-txt {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  min-width: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.dcpd-ch-fecha-txt::placeholder { color: #444; }
+
+/* Wrapper del botón calendario */
+.dcpd-cal-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ícono visible (no interactivo — los toques van al input encima) */
+.dcpd-cal-icon {
+  font-size: 15px;
+  pointer-events: none;
+  opacity: 0.55;
+  line-height: 1;
+}
+
+/* Input date transparente encima del ícono — recibe el toque */
+.dcpd-ch-fecha {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  z-index: 2;
+}
+
+
+.dcpd-ch-monto {
+  width: 115px;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--border, #2a2a3a);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: right;
+  font-family: inherit;
+  outline: none;
+  padding-left: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+.dcpd-ch-monto::placeholder { color: #333; font-weight: 400; }
+
+.dcpd-ch-del {
+  background: none;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  opacity: 0.45;
+  padding: 4px 0 4px 4px;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+}
+.dcpd-ch-del:active { opacity: 1; }
+
+/* ── Botón agregar ── */
+.dcpd-add-btn {
+  width: 100%;
+  padding: 15px;
+  background: transparent;
+  border: 1.5px dashed var(--border, #2a2a3a);
+  border-radius: 12px;
+  color: #C8102E;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.dcpd-add-btn:active {
+  background: #1e1e2a;
+  border-color: #C8102E;
+}
+
+.dcpd-add-icon {
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* ── Tarjeta de resultados ── */
+.dcpd-result-card {
+  margin-bottom: 0;
+}
+
+.dcpd-result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 16px;
+}
+
+.dcpd-rl {
+  font-size: 14px;
+  color: #9a9ea8;
+}
+
+.dcpd-rv {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.dcpd-row-neg .dcpd-rv { color: #f87171; }   /* intereses — rojo suave */
+.dcpd-row-pos .dcpd-rv { color: #4ade80; }   /* neto — verde suave */
+
+/* ── Estado vacío ── */
+.dcpd-empty {
+  text-align: center;
+  color: #6a6e66;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 28px 20px;
+}
+
+/* ── Fixes para inputs en dark mode ── */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+/* ── Selector de nivel de aprobación ── */
+.dcpd-nivel-row {
+  padding: 10px 16px 14px;
+}
+
+.dcpd-nivel-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6a6e66;
+  margin-bottom: 10px;
+}
+
+.dcpd-nivel-btns {
+  display: flex;
+  gap: 7px;
+}
+
+.dcpd-nivel-btn {
+  flex: 1;
+  padding: 9px 4px;
+  background: transparent;
+  border: 1.5px solid var(--border, #2a2a3a);
+  border-radius: 9px;
+  color: #9a9ea8;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  text-align: center;
+}
+
+.dcpd-nivel-btn.dcpd-nivel-active {
+  border-color: #C8102E;
+  color: #C8102E;
+  background: rgba(200, 16, 46, 0.1);
+}
+
+.dcpd-nivel-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.dcpd-nivel-hint {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #6a6e66;
+  font-style: italic;
+  min-height: 16px;
+}
+
+/* Ocultar flechas en inputs numéricos */
+.dcpd-tna-input::-webkit-outer-spin-button,
+.dcpd-tna-input::-webkit-inner-spin-button,
+.dcpd-ch-monto::-webkit-outer-spin-button,
+.dcpd-ch-monto::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.dcpd-tna-input[type=number],
+.dcpd-ch-monto[type=number] { -moz-appearance: textfield; }

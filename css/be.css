@@ -1,0 +1,426 @@
+/* ── Banca Empresa — Tasas ── */
+
+.be-view {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--bg-base, #0e0e13);
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  overflow: hidden;          /* sin scroll horizontal de página */
+  max-width: 100vw;
+}
+
+/* ── Topbar ── */
+.be-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--bg-surface, #17171f);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  flex-shrink: 0;
+}
+
+.be-back {
+  background: none;
+  border: none;
+  color: #C8102E;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px 0 0;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.be-titles { flex: 1; min-width: 0; }
+
+.be-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.be-subtitle {
+  font-size: 11px;
+  color: #6a6e66;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.be-icon-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
+}
+.be-icon-btn:active { background: rgba(255,255,255,0.08); }
+
+/* ── Tabs ── */
+.be-tabs {
+  display: flex;
+  background: var(--bg-surface, #17171f);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  flex-shrink: 0;
+}
+
+.be-tab {
+  flex: 1;
+  padding: 11px 8px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #6a6e66;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.be-tab-active {
+  color: #C8102E;
+  border-bottom-color: #C8102E;
+}
+
+/* ── Buscador ── */
+.be-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--bg-surface, #17171f);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  flex-shrink: 0;
+}
+
+.be-search-input {
+  flex: 1;
+  background: var(--bg-base, #0e0e13);
+  border: 1px solid var(--border, #2a2a3a);
+  border-radius: 9px;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-family: inherit;
+  padding: 8px 12px;
+  outline: none;
+  min-width: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.be-search-input::placeholder { color: #444; }
+.be-search-input:focus { border-color: #C8102E; }
+
+.be-search-clear {
+  background: none;
+  border: none;
+  color: #6a6e66;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 6px;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Scroll principal ── */
+.be-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;        /* contiene tablas anchas dentro de sus wrappers */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Sección ── */
+.be-section {
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+/* Encabezado sticky dentro del scroll vertical */
+.be-section-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px 10px 14px;
+  background: #14141c;
+  border-top: 1px solid var(--border, #2a2a3a);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.be-section-hdr:active { background: #1a1828; }
+
+/* ── Chevron ── */
+.be-section-chevron {
+  font-size: 16px;
+  color: #6a6e66;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  line-height: 1;
+}
+.be-section.be-collapsed .be-section-chevron {
+  transform: rotate(-90deg);
+}
+
+/* ── Estado colapsado ── */
+.be-section.be-collapsed .be-table-wrap {
+  display: none;
+}
+
+.be-section-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.be-section-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #C8102E;
+  opacity: 0.8;
+}
+
+.be-section-nombre {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Estrella ── */
+.be-star {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+  padding: 4px 0 4px 8px;
+  line-height: 1;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, transform 0.1s;
+}
+.be-star:active { transform: scale(1.3); }
+.be-star-on { color: #f59e0b; }
+
+/* ── Tabla ── */
+.be-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg-card, #1e1e2a);
+  /* Gradiente derecho como indicador de scroll */
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+}
+/* Cuando no hay overflow real, el gradiente desaparece (el contenido llega al borde) */
+.be-table-wrap:not([data-overflow]) {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.be-table {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 100%;
+  font-size: 12px;
+}
+
+/* Header de tabla */
+.be-table thead tr {
+  background: rgba(255,255,255,0.04);
+}
+
+.be-table th {
+  padding: 8px 12px;
+  text-align: right;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #6a6e66;
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  white-space: nowrap;
+}
+
+/* Primera columna: denominación — sticky */
+.be-table th:first-child,
+.be-table td:first-child {
+  text-align: left;
+  padding-left: 14px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--bg-card, #1e1e2a);
+  min-width: 130px;
+  max-width: 200px;
+  white-space: normal;        /* permite wrap en nombres largos */
+  border-right: 1px solid var(--border, #2a2a3a);
+}
+.be-table thead th:first-child {
+  background: #1a1a26;
+  z-index: 3;
+}
+
+.be-table th:last-child,
+.be-table td:last-child { padding-right: 20px; }
+
+/* Filas de datos */
+.be-table tbody tr {
+  border-bottom: 1px solid rgba(42, 42, 58, 0.8);
+}
+.be-table tbody tr:last-child  { border-bottom: none; }
+.be-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.be-table tbody tr:nth-child(even) td:first-child { background: #201e2e; }
+.be-table tbody tr:active td { background: rgba(200,16,46,0.06) !important; }
+
+.be-table td {
+  padding: 9px 12px;
+  text-align: right;
+  color: #d0d0d8;
+  white-space: pre-line;      /* respeta \n en valores de celda */
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+.be-table td:first-child {
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+/* ── Celda de denominación: star + texto ── */
+.be-row-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.be-row-star {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 1px;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, transform 0.1s;
+}
+.be-row-star:active  { transform: scale(1.4); }
+.be-row-star-on      { color: #f59e0b; }
+
+/* Fila de continuación (primera celda vacía) — sin estrella, sangría */
+.be-row-cont {
+  padding-left: 18px;
+  color: #9a9ea8;
+}
+
+/* ── Botón ocultar (✕) en cabecera de sección ── */
+.be-hide-btn {
+  background: none;
+  border: none;
+  color: #444;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, background 0.15s;
+}
+.be-hide-btn:hover  { color: #C8102E; background: rgba(200,16,46,0.08); }
+.be-hide-btn:active { background: rgba(200,16,46,0.15); }
+
+/* ── Sección oculta (mostrada en modo showHidden) ── */
+.be-section.be-hidden-sec {
+  opacity: 0.45;
+}
+.be-section.be-hidden-sec .be-section-hdr {
+  background: #0f0f18;
+  border-top-color: #1e1e2e;
+  border-bottom-color: #1e1e2e;
+}
+
+/* ── Botón restaurar (↩) en secciones ocultas ── */
+.be-restore-btn {
+  background: none;
+  border: 1px solid #2a2a3a;
+  border-radius: 7px;
+  color: #6a9fd8;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 9px;
+  flex-shrink: 0;
+  line-height: 1.3;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+.be-restore-btn:active { background: rgba(106,159,216,0.15); }
+
+/* ── Píldora de secciones ocultas ── */
+.be-hidden-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 16px 20px;
+  padding: 9px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed #2a2a3a;
+  border-radius: 10px;
+  color: #6a6e66;
+  font-size: 12px;
+}
+.be-hidden-toggle {
+  background: none;
+  border: 1px solid #2a2a3a;
+  border-radius: 7px;
+  color: #9a9ea8;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 10px;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+.be-hidden-toggle:active { background: rgba(255,255,255,0.06); }
+
+/* ── Estado vacío ── */
+.be-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  gap: 14px;
+  color: #6a6e66;
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 28px;
+  line-height: 1.7;
+}
+.be-empty strong { color: #9a9ea8; }
+.be-empty-icon { font-size: 44px; opacity: 0.4; }

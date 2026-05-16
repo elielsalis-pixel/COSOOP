@@ -88,6 +88,7 @@ const App = (() => {
     if (section === 'tas')    { TasasView.render();    return; }
     if (section === 'pdf')    { PDFViewer.render();    return; }
     if (section === 'pda_bp') { PDA_BP.render();      return; }
+    if (section === 'pda_be') { PDA_BE.render();      return; }
   }
 
   /* ── Reiniciar (cambio de PIN) ── */

@@ -1,0 +1,223 @@
+/* ── PDA_BE — Préstamos BE ── */
+
+.be-view {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font);
+  overflow: hidden;
+}
+
+.be-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.be-back {
+  background: none;
+  border: none;
+  color: var(--brand-red);
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px 0 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.be-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.be-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.be-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.be-divider        { height: 1px; background: var(--border); }
+.be-divider-strong { height: 2px; background: var(--border); }
+
+.be-field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0 16px;
+  gap: 12px;
+}
+
+.be-field-label {
+  font-size: 14px;
+  color: #9a9ea8;
+  flex-shrink: 0;
+}
+
+.be-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.be-sym {
+  font-size: 16px;
+  color: #9a9ea8;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.be-input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: right;
+  width: 140px;
+  outline: none;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.be-input::placeholder { color: #333; font-weight: 400; }
+.be-input::-webkit-outer-spin-button,
+.be-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.be-input[type=number] { -moz-appearance: textfield; }
+
+.be-input-sm  { width: 80px; }
+.be-input-med { width: 110px; }
+
+.be-input-date {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: right;
+  outline: none;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  color-scheme: dark;
+}
+
+.be-input:disabled,
+.be-input-date:disabled { opacity: 0.3; }
+
+.be-section-hdr {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6a6e66;
+  padding: 0 4px 10px;
+}
+
+/* ── Resultados resumen ── */
+.be-result-card { margin-bottom: 0; }
+
+.be-result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+}
+
+.be-rl {
+  font-size: 13px;
+  color: #9a9ea8;
+  flex: 1;
+  padding-right: 8px;
+}
+
+.be-rv {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.be-row-accent {
+  background: rgba(74,222,128,.07);
+  padding: 18px 16px;
+}
+.be-rl-accent {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4ade80;
+}
+.be-rv-accent {
+  font-size: 20px;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+/* ── Cuadro de marcha ── */
+.be-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.be-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  background: var(--bg-card);
+  min-width: 620px;
+}
+
+.be-table thead tr th {
+  background: var(--brand-red);
+  color: #fff;
+  padding: 9px 7px;
+  text-align: right;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.be-table thead tr th:first-child { text-align: center; }
+
+.be-table tbody tr td {
+  padding: 8px 7px;
+  text-align: right;
+  color: #c8cad0;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.be-table tbody tr td:first-child {
+  text-align: center;
+  color: #6a6e66;
+  font-weight: 700;
+}
+.be-table tbody tr td:nth-child(2) { text-align: center; font-size: 10px; }
+.be-table tbody tr:last-child td { border-bottom: none; }
+.be-table tbody tr:nth-child(even) td { background: rgba(255,255,255,.025); }
+.be-table tbody tr.be-grace-row td { color: #9a9ea8; font-style: italic; }
+
+/* ── Estado vacío ── */
+.be-empty {
+  text-align: center;
+  color: #6a6e66;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 28px 20px;
+}

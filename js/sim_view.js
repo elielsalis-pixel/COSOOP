@@ -26,6 +26,12 @@ const SimView = (() => {
       subtitle: 'Sistema francés con seguro, IVA y sellado',
       icon:     '🏠',
     },
+    {
+      id:       'pda_be',
+      title:    'Préstamos BE',
+      subtitle: 'Sistema francés con gracia, tasa fija/variable e IVA',
+      icon:     '💼',
+    },
   ];
 
   const VIEW = `

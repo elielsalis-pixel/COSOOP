@@ -212,13 +212,9 @@ const PDA_BP = (() => {
     if (daysDiff(fechaConst, fechaVto1) <= 0) return null;
 
     const TNA = tna / 100;
-    const TEM = TNA * 30 / 365;
     const n   = Math.round(cuotas);
 
-    // Cuota pura — sistema francés con TEM (tasa de período 30 días)
-    const cuotaPura = monto * TEM / (1 - Math.pow(1 + TEM, -n));
-
-    const sellado       = monto * selladoPct / 100;
+    const sellado        = monto * selladoPct / 100;
     const montoAcreditar = monto - sellado;
 
     // Fechas de vencimiento: d0 = constitución, d1..dn = cuotas
@@ -227,19 +223,35 @@ const PDA_BP = (() => {
       dates.push(addMonths(fechaVto1, k - 1));
     }
 
+    // Días reales de cada período
+    const periodDays = [];
+    for (let k = 1; k <= n; k++) {
+      periodDays.push(daysDiff(dates[k - 1], dates[k]));
+    }
+
+    // Cuota pura — sistema francés actuarial con días reales
+    // C = monto / Σ[k=1..n]{ 1 / Π[j=1..k](1 + TNA×días_j/365) }
+    // Garantiza saldo = 0 al período n exactamente
+    let denom = 0, cumProd = 1;
+    for (let k = 0; k < n; k++) {
+      cumProd *= (1 + TNA * periodDays[k] / 365);
+      denom   += 1 / cumProd;
+    }
+    const cuotaPura = monto / denom;
+
     // Cuadro de marcha
     let saldo = monto;
     const rows = [];
-    let totalIntereses = 0, totalIVA = 0, totalCuotas = 0;
+    let totalIntereses = 0, totalCuotas = 0;
 
     const cfTimes = [0];
-    const cfCFT  = [-montoAcreditar]; // incluye todos los costos
-    const cfPuro = [-monto];          // solo interés puro (sin tributos)
+    const cfCFT  = [-montoAcreditar];
+    const cfPuro = [-monto];
 
     let diasAcum = 0;
 
-    for (let k = 1; k <= n; k++) {
-      const dias    = daysDiff(dates[k - 1], dates[k]);
+    for (let k = 0; k < n; k++) {
+      const dias    = periodDays[k];
       diasAcum     += dias;
 
       const interes  = saldo * TNA * dias / 365;
@@ -248,12 +260,11 @@ const PDA_BP = (() => {
       const cuotaFin = cuotaPura + iva;
 
       totalIntereses += interes;
-      totalIVA       += iva;
       totalCuotas    += cuotaFin;
 
       rows.push({
-        num: k,
-        fecha: dates[k],
+        num: k + 1,
+        fecha: dates[k + 1],
         dias,
         saldoInicial: saldo,
         capital,

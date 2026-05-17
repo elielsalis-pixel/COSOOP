@@ -155,6 +155,30 @@ const Config = (() => {
     </div>
     <div class="cfg-hint" id="cfg-pdf-msg"></div>
 
+    <!-- Backup -->
+    <div class="cfg-section-hdr">Backup</div>
+    <div class="cfg-card">
+      <button class="cfg-row cfg-action" id="cfg-backup-export">
+        <span class="cfg-row-icon">📤</span>
+        <div class="cfg-row-info">
+          <div class="cfg-row-label">Exportar backup</div>
+          <div class="cfg-row-sub">Genera un ZIP con todos los datos de la app</div>
+        </div>
+        <span class="cfg-row-arrow">›</span>
+      </button>
+      <div class="cfg-divider"></div>
+      <label class="cfg-row cfg-action" for="cfg-backup-input">
+        <span class="cfg-row-icon">📥</span>
+        <div class="cfg-row-info">
+          <div class="cfg-row-label">Restaurar backup</div>
+          <div class="cfg-row-sub">Importa un ZIP generado por esta app</div>
+        </div>
+        <span class="cfg-row-arrow">›</span>
+      </label>
+      <input id="cfg-backup-input" type="file" accept=".zip" style="display:none">
+    </div>
+    <div class="cfg-hint" id="cfg-backup-msg"></div>
+
     <!-- Seguridad -->
     <div class="cfg-section-hdr">Seguridad</div>
     <div class="cfg-card">
@@ -386,6 +410,47 @@ const Config = (() => {
         } catch (err) {
           if (msgEl) { msgEl.textContent = `Error: ${err.message}`; msgEl.className = 'cfg-hint cfg-hint-err'; }
         }
+      });
+
+    /* Backup — exportar */
+    document.getElementById('cfg-backup-export')
+      ?.addEventListener('click', async () => {
+        const msgEl = document.getElementById('cfg-backup-msg');
+        const btn   = document.getElementById('cfg-backup-export');
+        if (msgEl) { msgEl.textContent = 'Generando backup…'; msgEl.className = 'cfg-hint'; }
+        if (btn)   btn.style.opacity = '0.5';
+        try {
+          await Backup.exportar();
+          if (msgEl) { msgEl.textContent = 'Backup generado ✓'; msgEl.className = 'cfg-hint cfg-hint-ok'; }
+        } catch (err) {
+          if (err?.name === 'AbortError') {
+            if (msgEl) { msgEl.textContent = ''; msgEl.className = 'cfg-hint'; }
+          } else {
+            if (msgEl) { msgEl.textContent = `Error: ${err.message}`; msgEl.className = 'cfg-hint cfg-hint-err'; }
+          }
+        } finally {
+          if (btn) btn.style.opacity = '';
+        }
+      });
+
+    /* Backup — restaurar */
+    document.getElementById('cfg-backup-input')
+      ?.addEventListener('change', async e => {
+        const file  = e.target.files?.[0];
+        if (!file) return;
+        const msgEl = document.getElementById('cfg-backup-msg');
+        const lbl   = document.querySelector('label[for="cfg-backup-input"]');
+        if (msgEl) { msgEl.textContent = 'Validando y restaurando…'; msgEl.className = 'cfg-hint'; }
+        if (lbl)   lbl.style.opacity = '0.5';
+        try {
+          await Backup.restaurar(file);
+          if (msgEl) { msgEl.textContent = 'Backup restaurado. Reiniciando…'; msgEl.className = 'cfg-hint cfg-hint-ok'; }
+          setTimeout(() => location.reload(), 1200);
+        } catch (err) {
+          if (msgEl) { msgEl.textContent = `Error: ${err.message}`; msgEl.className = 'cfg-hint cfg-hint-err'; }
+          if (lbl)   lbl.style.opacity = '';
+        }
+        e.target.value = '';
       });
 
     /* Cambiar PIN */

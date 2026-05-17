@@ -49,8 +49,14 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 #app {
-  height: 100%;
+  flex: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background: var(--bg-surface);

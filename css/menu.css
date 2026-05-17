@@ -20,17 +20,13 @@
   gap: 10px;
 }
 
-.top-brand-logo {
-  width: 32px;
-  height: 32px;
-  background: var(--brand-red);
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.top-brand-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   flex-shrink: 0;
+  object-fit: contain;
 }
-.top-brand-logo svg { width: 18px; height: 18px; }
 
 .top-brand-name {
   font-size: 16px;

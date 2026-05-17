@@ -4,7 +4,6 @@ const App = (() => {
   /* ── Vistas embebidas (no fetch — funciona como file:// y como http://) ── */
   const VIEWS = {
     login: `
-<div class="coop-stripe"></div>
 <div class="login-wrap">
   <div id="login-icon-slot"></div>
   <div class="login-title" id="login-title"></div>
@@ -37,12 +36,7 @@ const App = (() => {
 <div class="menu-view">
   <div class="top-bar">
     <div class="top-brand">
-      <div class="top-brand-logo">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M8 10v11M12 10v11M16 10v11M20 10v11"
-            stroke="white" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
+      <img src="./icons/icon-192.png" class="top-brand-img" alt="Credicoop">
       <div>
         <div class="top-brand-name">Cosoop</div>
         <div class="top-brand-sub">Credicoop Coop. Ltdo.</div>
@@ -145,7 +139,7 @@ const App = (() => {
     </svg>`;
 
     if (isSetup) {
-      iconSlot.innerHTML = `<div class="setup-logo">${bankSVG}</div>`;
+      iconSlot.innerHTML = `<img src="./icons/icon-192.png" class="setup-img" alt="Credicoop">`;
       title.textContent    = 'Bienvenido';
       subtitle.textContent = 'Configurá tu PIN de 4 dígitos para proteger el acceso';
       stepEl.textContent   = 'Paso 1 de 2 — Ingresá tu PIN';

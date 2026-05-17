@@ -43,7 +43,6 @@
   color: #fff;
 }
 
-/* En el visor, el título es el nombre del archivo → puede ser largo */
 .pv-visor-title {
   font-size: 14px;
   white-space: nowrap;
@@ -102,13 +101,90 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ── Repositorio: scroll y lista ── */
+/* ── Scroll contenedor ── */
 .pv-scroll {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
+/* ── Encabezados de sección ── */
+.pv-section-hdr {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6a6e66;
+  padding: 18px 16px 8px;
+}
+
+/* ── Hub: tarjetas de carpeta ── */
+.pv-hub-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px;
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.12s;
+}
+.pv-hub-card:active { background: rgba(200,16,46,0.06); }
+
+.pv-hub-card.biblioteca {
+  background: rgba(200,16,46,0.04);
+}
+.pv-hub-card.biblioteca:active { background: rgba(200,16,46,0.1); }
+
+.pv-hub-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.pv-hub-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pv-hub-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pv-hub-count {
+  font-size: 12px;
+  color: #6a6e66;
+  margin-top: 2px;
+}
+
+.pv-hub-act {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  color: #3a3a4a;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, background 0.15s;
+}
+.pv-hub-act.share:active { color: #4ade80; background: rgba(74,222,128,0.1); }
+.pv-hub-act.del:active   { color: #C8102E; background: rgba(200,16,46,0.1); }
+
+.pv-hub-arrow {
+  color: #3a3a4a;
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ── Lista de items (biblioteca / carpeta) ── */
 .pv-item {
   display: flex;
   align-items: center;
@@ -120,6 +196,7 @@
   transition: background 0.12s, opacity 0.2s;
 }
 .pv-item:active { background: rgba(200,16,46,0.06); }
+.pv-item.pv-item-sel { background: rgba(200,16,46,0.06); }
 
 .pv-item-icon {
   font-size: 28px;
@@ -148,120 +225,6 @@
   margin-top: 3px;
 }
 
-.pv-item-del {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 6px;
-  color: #3a3a4a;
-  flex-shrink: 0;
-  border-radius: 8px;
-  -webkit-tap-highlight-color: transparent;
-  transition: color 0.15s, background 0.15s;
-}
-.pv-item-del:active {
-  color: #C8102E;
-  background: rgba(200,16,46,0.1);
-}
-
-/* ── Indicador de página (dentro del visor) ── */
-.pv-page-indicator {
-  background: var(--bg-surface, #17171f);
-  border-bottom: 1px solid var(--border, #2a2a3a);
-  text-align: center;
-  font-size: 12px;
-  color: #6a6e66;
-  padding: 6px 16px;
-  flex-shrink: 0;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ── Visor: scroll de páginas ── */
-.pv-visor-view { background: #111118; }
-
-.pv-visor-scroll {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  background: #111118;
-  /* Permite pinch-zoom nativo del navegador */
-  touch-action: pan-x pan-y pinch-zoom;
-}
-
-/* Cada página del PDF */
-.pv-page {
-  display: block;
-  width: 100%;
-  background: #1a1a24;
-  margin-bottom: 6px;
-  /* Altura mínima mientras carga */
-  min-height: 200px;
-}
-
-.pv-page:last-child { margin-bottom: 0; }
-
-.pv-page canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/* ── Encabezados de sección ── */
-.pv-section-hdr {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #6a6e66;
-  padding: 18px 16px 8px;
-}
-
-/* ── Carpetas ── */
-.pv-folder-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border, #2a2a3a);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: background 0.12s;
-}
-.pv-folder-item:active { background: rgba(200,16,46,0.06); }
-
-.pv-folder-icon { font-size: 26px; flex-shrink: 0; }
-
-.pv-folder-info { flex: 1; min-width: 0; }
-
-.pv-folder-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-}
-
-.pv-folder-count {
-  font-size: 12px;
-  color: #6a6e66;
-  margin-top: 2px;
-}
-
-.pv-folder-act {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
-  flex-shrink: 0;
-  -webkit-tap-highlight-color: transparent;
-  color: #3a3a4a;
-  transition: color 0.15s, background 0.15s;
-}
-.pv-folder-act.share:active { color: #4ade80; background: rgba(74,222,128,0.1); }
-.pv-folder-act.del:active   { color: #C8102E; background: rgba(200,16,46,0.1); }
-
 /* ── Checkbox de selección ── */
 .pv-item-check {
   width: 22px;
@@ -280,10 +243,8 @@
   background-size: 12px;
 }
 
-.pv-item-sel { background: rgba(200,16,46,0.06); }
-
-/* ── Botón mover ── */
-.pv-item-move {
+/* ── Botón "Agregar a carpeta" (biblioteca) ── */
+.pv-item-add {
   background: none;
   border: none;
   font-size: 18px;
@@ -295,21 +256,63 @@
   -webkit-tap-highlight-color: transparent;
   transition: color 0.15s, background 0.15s;
 }
-.pv-item-move:active { color: #4ade80; background: rgba(74,222,128,0.1); }
+.pv-item-add:active { color: #4ade80; background: rgba(74,222,128,0.1); }
 
-/* ── Badge de carpeta en item PDF ── */
-.pv-item-badge {
-  display: inline-block;
-  font-size: 10px;
-  background: rgba(200,16,46,0.15);
-  color: #C8102E;
-  border-radius: 4px;
-  padding: 1px 6px;
-  margin-left: 6px;
-  vertical-align: middle;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+/* ── Botón "Quitar de carpeta" ── */
+.pv-item-quitar {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px;
+  color: #3a3a4a;
+  flex-shrink: 0;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, background 0.15s;
 }
+.pv-item-quitar:active { color: #C8102E; background: rgba(200,16,46,0.1); }
+
+/* ── Botón eliminar (biblioteca) ── */
+.pv-item-del {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  color: #3a3a4a;
+  flex-shrink: 0;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, background 0.15s;
+}
+.pv-item-del:active {
+  color: #C8102E;
+  background: rgba(200,16,46,0.1);
+}
+
+/* ── Fila "Agregar de biblioteca" (footer de carpeta) ── */
+.pv-add-row {
+  padding: 16px;
+  border-top: 1px solid var(--border, #2a2a3a);
+  display: flex;
+  justify-content: center;
+}
+
+.pv-add-btn {
+  background: var(--bg-surface, #17171f);
+  border: 1.5px solid var(--border, #2a2a3a);
+  border-radius: 20px;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 10px 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.pv-add-btn:active { background: rgba(200,16,46,0.1); border-color: #C8102E; color: #C8102E; }
 
 /* ── Barra de selección (bottom) ── */
 .pv-sel-bar {
@@ -359,7 +362,7 @@
   align-items: flex-end;
 }
 
-.pv-sheet {
+.pv-sheet-box {
   background: var(--bg-surface, #17171f);
   border-radius: 20px 20px 0 0;
   width: 100%;
@@ -411,6 +414,108 @@
   -webkit-tap-highlight-color: transparent;
 }
 .pv-sheet-cancel:active { opacity: 0.7; }
+
+/* ── Library picker (overlay pantalla completa) ── */
+.pv-lib-picker {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: var(--bg-base, #0e0e13);
+  display: flex;
+  flex-direction: column;
+}
+
+.pv-lib-picker-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pv-pick-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.12s;
+}
+.pv-pick-item:active { background: rgba(200,16,46,0.06); }
+.pv-pick-item.ya     { opacity: 0.45; pointer-events: none; }
+.pv-pick-item.sel    { background: rgba(200,16,46,0.06); }
+
+.pv-pick-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border, #2a2a3a);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.pv-pick-check.ya  { background: #3a3a4a; border-color: #3a3a4a; color: #6a6e66; }
+.pv-pick-check.sel { background: #C8102E; border-color: #C8102E; color: #fff; }
+
+.pv-pick-info { flex: 1; min-width: 0; }
+
+.pv-pick-nombre {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e0e0e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pv-pick-meta {
+  font-size: 12px;
+  color: #6a6e66;
+  margin-top: 3px;
+}
+
+/* ── Indicador de página (visor) ── */
+.pv-page-indicator {
+  background: var(--bg-surface, #17171f);
+  border-bottom: 1px solid var(--border, #2a2a3a);
+  text-align: center;
+  font-size: 12px;
+  color: #6a6e66;
+  padding: 6px 16px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Visor: scroll de páginas ── */
+.pv-visor-view { background: #111118; }
+
+.pv-visor-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: #111118;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+
+.pv-page {
+  display: block;
+  width: 100%;
+  background: #1a1a24;
+  margin-bottom: 6px;
+  min-height: 200px;
+}
+.pv-page:last-child { margin-bottom: 0; }
+
+.pv-page canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
 /* ── Empty state pequeño ── */
 .pv-empty-small {

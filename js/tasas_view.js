@@ -84,10 +84,9 @@ const TasasView = (() => {
         const stored = await def.getStored();
         const resumen = def.getEstado?.(stored);
         if (resumen) {
-          const fecha = new Date(stored.cargadoEl).toLocaleDateString('es-AR', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-          });
-          estadoTxt = `${resumen} · ${fecha}`;
+          estadoTxt = stored.cargadoEl
+            ? `${resumen} · ${new Date(stored.cargadoEl).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })}`
+            : resumen;
         }
       } catch { /* sin DB */ }
 
@@ -212,17 +211,27 @@ const TasasView = (() => {
       : '<span class="tv-null">—</span>';
 
     wrap.innerHTML = `
-      <div class="tv-huva-grid">
-        <div class="tv-huva-corner"></div>
-        <div class="tv-huva-col-hdr">1era Viv. SI</div>
-        <div class="tv-huva-col-hdr">1era Viv. NO</div>
-        <div class="tv-huva-row-hdr">Cobra Hab. SI</div>
-        <div class="tv-huva-cell">${fmtT(tasas.v1si_habsi)}</div>
-        <div class="tv-huva-cell">${fmtT(tasas.v1no_habsi)}</div>
-        <div class="tv-huva-row-hdr">Cobra Hab. NO</div>
-        <div class="tv-huva-cell">${fmtT(tasas.v1si_habno)}</div>
-        <div class="tv-huva-cell">${fmtT(tasas.v1no_habno)}</div>
-      </div>`;
+      <table class="tv-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>1era Viv. SI</th>
+            <th>1era Viv. NO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cobra Hab. SI</td>
+            <td>${fmtT(tasas.v1si_habsi)}</td>
+            <td>${fmtT(tasas.v1no_habsi)}</td>
+          </tr>
+          <tr>
+            <td>Cobra Hab. NO</td>
+            <td>${fmtT(tasas.v1si_habno)}</td>
+            <td>${fmtT(tasas.v1no_habno)}</td>
+          </tr>
+        </tbody>
+      </table>`;
   }
 
   /* ═══════════════════════════════════════════════════

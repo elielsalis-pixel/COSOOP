@@ -79,34 +79,47 @@ const HipUVA = (() => {
     const hoy = new Date().toISOString().slice(0, 10);
     if (cached?.fecha === hoy) return cached;
 
-    const hasta  = hoy;
-    const desde  = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+    /* 1. argentinadatos.com — CORS abierto, fuente primaria */
+    try {
+      const json = await fetchJSON('https://api.argentinadatos.com/v1/finanzas/indices/uva', 8000);
+      if (Array.isArray(json) && json.length) {
+        const last = json[json.length - 1];
+        if (last?.fecha && last?.valor != null) {
+          const entry = { fecha: last.fecha, valor: last.valor };
+          try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
+          return entry;
+        }
+      }
+    } catch {}
+
+    /* 2. BCRA directo (puede fallar por CORS en móvil) */
+    const hasta   = hoy;
+    const desde   = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
     const bcraUrl = `https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/${BCRA_UVA_ID}?desde=${desde}&hasta=${hasta}`;
+    try {
+      const json = await fetchJSON(bcraUrl, 6000);
+      const arr  = json?.results;
+      if (arr?.length) {
+        const last  = arr[arr.length - 1];
+        const entry = { fecha: last.fecha, valor: last.valor };
+        try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
+        return entry;
+      }
+    } catch {}
 
-    let json = null;
+    /* 3. corsproxy.io como último recurso */
+    try {
+      const json = await fetchJSON(`https://corsproxy.io/?${encodeURIComponent(bcraUrl)}`, 10000);
+      const arr  = json?.results;
+      if (arr?.length) {
+        const last  = arr[arr.length - 1];
+        const entry = { fecha: last.fecha, valor: last.valor };
+        try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
+        return entry;
+      }
+    } catch {}
 
-    /* 1. Intento directo (si BCRA permite CORS) */
-    try { json = await fetchJSON(bcraUrl, 6000); } catch {}
-
-    /* 2. Fallback via proxy CORS */
-    if (!json) {
-      try {
-        json = await fetchJSON(
-          `https://corsproxy.io/?${encodeURIComponent(bcraUrl)}`,
-          10000
-        );
-      } catch {}
-    }
-
-    if (!json) return cached;
-
-    const arr = json?.results;
-    if (!arr?.length) return cached;
-
-    const last  = arr[arr.length - 1];
-    const entry = { fecha: last.fecha, valor: last.valor };
-    try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
-    return entry;
+    return cached;
   }
 
   /* ── Helpers ── */

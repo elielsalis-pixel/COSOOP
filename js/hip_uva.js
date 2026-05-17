@@ -60,6 +60,18 @@ const HipUVA = (() => {
   const BCRA_UVA_ID = 31;
   const UVA_LS_KEY  = 'cosoop_uva';
 
+  async function fetchJSON(url, timeoutMs) {
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const resp = await fetch(url, { signal: ctrl.signal });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return await resp.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   async function fetchUVA() {
     let cached = null;
     try { cached = JSON.parse(localStorage.getItem(UVA_LS_KEY)); } catch {}
@@ -67,27 +79,34 @@ const HipUVA = (() => {
     const hoy = new Date().toISOString().slice(0, 10);
     if (cached?.fecha === hoy) return cached;
 
-    const hasta = hoy;
-    const desde = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
-    const url   = `https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/${BCRA_UVA_ID}?desde=${desde}&hasta=${hasta}`;
+    const hasta  = hoy;
+    const desde  = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+    const bcraUrl = `https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/${BCRA_UVA_ID}?desde=${desde}&hasta=${hasta}`;
 
-    const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
-    try {
-      const resp = await fetch(url, { signal: ctrl.signal });
-      clearTimeout(timer);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      const json = await resp.json();
-      const arr  = json?.results;
-      if (!arr?.length) throw new Error('Sin datos');
-      const last  = arr[arr.length - 1];
-      const entry = { fecha: last.fecha, valor: last.valor };
-      try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
-      return entry;
-    } catch {
-      clearTimeout(timer);
-      return cached;
+    let json = null;
+
+    /* 1. Intento directo (si BCRA permite CORS) */
+    try { json = await fetchJSON(bcraUrl, 6000); } catch {}
+
+    /* 2. Fallback via proxy CORS */
+    if (!json) {
+      try {
+        json = await fetchJSON(
+          `https://corsproxy.io/?${encodeURIComponent(bcraUrl)}`,
+          10000
+        );
+      } catch {}
     }
+
+    if (!json) return cached;
+
+    const arr = json?.results;
+    if (!arr?.length) return cached;
+
+    const last  = arr[arr.length - 1];
+    const entry = { fecha: last.fecha, valor: last.valor };
+    try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
+    return entry;
   }
 
   /* ── Helpers ── */
@@ -312,22 +331,23 @@ const HipUVA = (() => {
     document.getElementById('huva-fecha-const').value = toISO(hoy);
     document.getElementById('huva-fecha-vto').value   = toISO(mesSig);
 
-    /* UVA automático desde BCRA */
+    /* UVA automático desde BCRA (con fallback proxy) */
     const uvaInp = document.getElementById('huva-uva');
     const uvaLbl = document.getElementById('huva-uva-lbl');
+
     fetchUVA().then(uva => {
       if (!uvaInp) return;
-      if (uva) {
+      if (uva?.valor) {
         uvaInp.value = uva.valor;
         const fechaFmt = new Date(uva.fecha + 'T12:00:00').toLocaleDateString('es-AR', {
           day: '2-digit', month: '2-digit', year: 'numeric',
         });
         if (uvaLbl) uvaLbl.textContent = `BCRA · ${fechaFmt}`;
       } else {
-        if (uvaLbl) uvaLbl.textContent = 'Sin conexión · ingresá manualmente';
+        if (uvaLbl) uvaLbl.textContent = 'No disponible · ingresá manualmente';
       }
     }).catch(() => {
-      if (uvaLbl) uvaLbl.textContent = 'Sin conexión · ingresá manualmente';
+      if (uvaLbl) uvaLbl.textContent = 'No disponible · ingresá manualmente';
     });
 
     /* TNA desde tabla configurada */
@@ -371,7 +391,6 @@ const HipUVA = (() => {
       const fcStr    = document.getElementById('huva-fecha-const').value;
       const fvStr    = document.getElementById('huva-fecha-vto').value;
 
-      /* Validaciones */
       if (!monto || !cuotas || !valorUVA || !tna) {
         mostrarError('Completá todos los campos antes de calcular.');
         return;
@@ -381,18 +400,17 @@ const HipUVA = (() => {
         return;
       }
       if (monto > MAX_MONTO) {
-        mostrarError(`El monto máximo es $ ${MAX_MONTO.toLocaleString('es-AR')}.`);
+        mostrarError('El monto máximo es $ ' + MAX_MONTO.toLocaleString('es-AR') + '.');
         return;
       }
       if (ingresos > 0 && ingresos < MIN_INGRESOS) {
-        mostrarError(`El ingreso mínimo requerido es $ ${MIN_INGRESOS.toLocaleString('es-AR')}.`);
+        mostrarError('El ingreso mínimo requerido es $ ' + MIN_INGRESOS.toLocaleString('es-AR') + '.');
         return;
       }
 
+      ocultarError();
       const fechaConst = new Date(fcStr + 'T12:00:00');
       const fechaVto   = new Date(fvStr + 'T12:00:00');
-
-      ocultarError();
       const res = calcular({ monto, cuotas, valorUVA, tna, iva: !v1SI, ingresos, fechaConst, fechaVto });
       mostrarResultados(res);
     });

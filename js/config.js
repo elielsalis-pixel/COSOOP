@@ -79,26 +79,46 @@ const Config = (() => {
     </div>
     <div class="cfg-hint" id="cfg-bp-msg"></div>
 
-    <!-- Hipotecario UVA -->
+    <!-- Hipotecario UVA — 4 filas, una por condición -->
     <div class="cfg-section-hdr">Tasas Hipotecario UVA</div>
     <div class="cfg-card">
-      <div class="cfg-huva-grid">
-        <div class="cfg-huva-corner"></div>
-        <div class="cfg-huva-col-hdr">1era Viv. SI</div>
-        <div class="cfg-huva-col-hdr">1era Viv. NO</div>
-        <div class="cfg-huva-row-hdr">Cobra Hab. SI</div>
-        <div class="cfg-huva-cell">
+      <div class="cfg-row">
+        <div class="cfg-row-info">
+          <div class="cfg-row-label">1era Viv. SI · Cobra Haberes SI</div>
+        </div>
+        <div class="cfg-huva-field">
           <input id="cfg-huva-v1si-habsi" class="cfg-huva-inp" type="number" inputmode="decimal" placeholder="0,00">
+          <span class="cfg-huva-sym">%</span>
         </div>
-        <div class="cfg-huva-cell">
-          <input id="cfg-huva-v1no-habsi" class="cfg-huva-inp" type="number" inputmode="decimal" placeholder="0,00">
+      </div>
+      <div class="cfg-divider"></div>
+      <div class="cfg-row">
+        <div class="cfg-row-info">
+          <div class="cfg-row-label">1era Viv. SI · Cobra Haberes NO</div>
         </div>
-        <div class="cfg-huva-row-hdr">Cobra Hab. NO</div>
-        <div class="cfg-huva-cell">
+        <div class="cfg-huva-field">
           <input id="cfg-huva-v1si-habno" class="cfg-huva-inp" type="number" inputmode="decimal" placeholder="0,00">
+          <span class="cfg-huva-sym">%</span>
         </div>
-        <div class="cfg-huva-cell">
+      </div>
+      <div class="cfg-divider"></div>
+      <div class="cfg-row">
+        <div class="cfg-row-info">
+          <div class="cfg-row-label">1era Viv. NO · Cobra Haberes SI</div>
+        </div>
+        <div class="cfg-huva-field">
+          <input id="cfg-huva-v1no-habsi" class="cfg-huva-inp" type="number" inputmode="decimal" placeholder="0,00">
+          <span class="cfg-huva-sym">%</span>
+        </div>
+      </div>
+      <div class="cfg-divider"></div>
+      <div class="cfg-row">
+        <div class="cfg-row-info">
+          <div class="cfg-row-label">1era Viv. NO · Cobra Haberes NO</div>
+        </div>
+        <div class="cfg-huva-field">
           <input id="cfg-huva-v1no-habno" class="cfg-huva-inp" type="number" inputmode="decimal" placeholder="0,00">
+          <span class="cfg-huva-sym">%</span>
         </div>
       </div>
       <div class="cfg-divider"></div>
@@ -217,14 +237,19 @@ const Config = (() => {
       const tasas = await HipUVATasas.get();
       el.textContent = tasas ? '4 tasas configuradas' : 'Sin tasas configuradas';
       if (tasas) {
-        const ids = ['cfg-huva-v1si-habsi', 'cfg-huva-v1no-habsi', 'cfg-huva-v1si-habno', 'cfg-huva-v1no-habno'];
-        const keys = ['v1si_habsi', 'v1no_habsi', 'v1si_habno', 'v1no_habno'];
-        ids.forEach((id, i) => {
+        const campos = [
+          { id: 'cfg-huva-v1si-habsi', key: 'v1si_habsi' },
+          { id: 'cfg-huva-v1si-habno', key: 'v1si_habno' },
+          { id: 'cfg-huva-v1no-habsi', key: 'v1no_habsi' },
+          { id: 'cfg-huva-v1no-habno', key: 'v1no_habno' },
+        ];
+        campos.forEach(({ id, key }) => {
           const inp = document.getElementById(id);
-          if (inp && tasas[keys[i]] != null) inp.value = tasas[keys[i]];
+          if (inp && tasas[key] != null) inp.value = tasas[key];
         });
       }
-    } catch {
+    } catch (err) {
+      console.error('[Config] mostrarEstadoHUVA:', err);
       el.textContent = 'Error al leer las tasas';
     }
   }
@@ -266,7 +291,13 @@ const Config = (() => {
     document.getElementById('cfg-back')
       ?.addEventListener('click', () => App.navigateTo('menu'));
 
-    await Promise.all([mostrarEstadoTabla(), mostrarEstadoBE(), mostrarEstadoBP(), mostrarEstadoPDF(), mostrarEstadoHUVA()]);
+    await Promise.all([
+      mostrarEstadoTabla(),
+      mostrarEstadoBE(),
+      mostrarEstadoBP(),
+      mostrarEstadoPDF(),
+      mostrarEstadoHUVA(),
+    ]);
 
     /* File picker — Flexibilidad DCPD */
     document.getElementById('cfg-file-input')
@@ -341,15 +372,15 @@ const Config = (() => {
       ?.addEventListener('click', async () => {
         const msgEl = document.getElementById('cfg-huva-msg');
         const v1si_habsi = parseFloat(document.getElementById('cfg-huva-v1si-habsi')?.value);
-        const v1no_habsi = parseFloat(document.getElementById('cfg-huva-v1no-habsi')?.value);
         const v1si_habno = parseFloat(document.getElementById('cfg-huva-v1si-habno')?.value);
+        const v1no_habsi = parseFloat(document.getElementById('cfg-huva-v1no-habsi')?.value);
         const v1no_habno = parseFloat(document.getElementById('cfg-huva-v1no-habno')?.value);
-        if ([v1si_habsi, v1no_habsi, v1si_habno, v1no_habno].some(isNaN)) {
+        if ([v1si_habsi, v1si_habno, v1no_habsi, v1no_habno].some(isNaN)) {
           if (msgEl) { msgEl.textContent = 'Completá las 4 tasas antes de guardar.'; msgEl.className = 'cfg-hint cfg-hint-err'; }
           return;
         }
         try {
-          await HipUVATasas.put({ v1si_habsi, v1no_habsi, v1si_habno, v1no_habno });
+          await HipUVATasas.put({ v1si_habsi, v1si_habno, v1no_habsi, v1no_habno });
           if (msgEl) { msgEl.textContent = 'Tasas guardadas ✓'; msgEl.className = 'cfg-hint cfg-hint-ok'; }
           await mostrarEstadoHUVA();
         } catch (err) {

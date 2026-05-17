@@ -79,15 +79,18 @@ const HipUVA = (() => {
     const hoy = new Date().toISOString().slice(0, 10);
     if (cached?.fecha === hoy) return cached;
 
-    /* 1. argentinadatos.com — CORS abierto, fuente primaria */
+    /* 1. argentinadatos.com — CORS abierto, fuente primaria
+       Itera hacia atrás porque el entry de hoy puede llegar sin valor aún */
     try {
-      const json = await fetchJSON('https://api.argentinadatos.com/v1/finanzas/indices/uva', 8000);
-      if (Array.isArray(json) && json.length) {
-        const last = json[json.length - 1];
-        if (last?.fecha && last?.valor != null) {
-          const entry = { fecha: last.fecha, valor: last.valor };
-          try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
-          return entry;
+      const json = await fetchJSON('https://api.argentinadatos.com/v1/finanzas/indices/uva', 12000);
+      if (Array.isArray(json)) {
+        for (let i = json.length - 1; i >= Math.max(0, json.length - 5); i--) {
+          const e = json[i];
+          if (e?.fecha && e?.valor != null && !isNaN(e.valor) && e.valor > 0) {
+            const entry = { fecha: e.fecha, valor: e.valor };
+            try { localStorage.setItem(UVA_LS_KEY, JSON.stringify(entry)); } catch {}
+            return entry;
+          }
         }
       }
     } catch {}

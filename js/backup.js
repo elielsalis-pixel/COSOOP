@@ -95,7 +95,7 @@ const Backup = (() => {
     const JSZip = await loadJSZip();
 
     /* localStorage */
-    const lsKeys = ['cosoop_pin_hash', 'cosoop_uva'];
+    const lsKeys = ['cosoop_uva']; /* cosoop_pin_hash excluido intencionalmente */
     const lsData = {};
     lsKeys.forEach(k => {
       const v = localStorage.getItem(k);
@@ -212,8 +212,8 @@ const Backup = (() => {
     const idb = payload.idb;
     const ls  = payload.localStorage ?? {};
 
-    /* localStorage */
-    ['cosoop_pin_hash', 'cosoop_uva'].forEach(k => {
+    /* localStorage — cosoop_pin_hash nunca se toca (ni escribe ni borra) */
+    ['cosoop_uva'].forEach(k => {
       if (k in ls) localStorage.setItem(k, ls[k]);
       else         localStorage.removeItem(k);
     });
